@@ -8,17 +8,31 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'app';
 
+  // columnDefs = [
+  //   {
+  //     headerName: 'Make',
+  //     field: 'make',
+  //     sortable: true,
+  //     filter: true,
+  //     checkboxSelection: true
+  //   },
+  //   { headerName: 'Model', field: 'model', sortable: true, filter: true },
+  //   { headerName: 'Price', field: 'price', sortable: true, filter: true }
+  // ];
+
   columnDefs = [
-    {
-      headerName: 'Make',
-      field: 'make',
-      sortable: true,
-      filter: true,
-      checkboxSelection: true
-    },
-    { headerName: 'Model', field: 'model', sortable: true, filter: true },
-    { headerName: 'Price', field: 'price', sortable: true, filter: true }
+    { headerName: 'Make', field: 'make', rowGroup: true },
+    { headerName: 'Price', field: 'price' }
   ];
+
+  autoGroupColumnDef = {
+    headerName: 'Model',
+    field: 'model',
+    cellRenderer: 'agGroupCellRenderer',
+    cellRendererParams: {
+      checkbox: true
+    }
+  };
 
   rowData = [
     { make: 'Toyota', model: 'Celica', price: 35000 },
