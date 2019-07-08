@@ -42,79 +42,110 @@ export class AppComponent {
         filter: true
       },
       {
-        headerName: 'Price',
-        field: 'price',
+        headerName: 'Value (EUR)',
+        field: 'value',
         sortable: true,
         filter: true
       }
     ];
-    // this.defaultColDef = {
-    //   width: 200,
-    //   resizable: true
-    // };
 
     this.rowData = [
       {
         make: 'Ferrari',
         model: 'Monza',
-        price: 200000,
+        value: 200000,
         year: 2019,
-        engine: 5.0
-      },
-      {
-        make: 'Ferrari',
-        model: 'Portofino',
-        price: 250000,
-        year: 2018,
-        engine: 5.0
+        engine: 6.0
       },
       {
         make: 'Ferrari',
         model: 'GTC4 ',
-        price: 200000,
+        value: 200000,
         year: 2017,
         engine: 5.0
       },
       {
         make: 'Lamborghini',
         model: 'Huracan',
-        price: 200000,
+        value: 200000,
         year: 2018,
-        engine: 5.0
+        engine: 6.0
       },
       {
         make: 'Lamborghini',
         model: 'Aventador',
-        price: 250000,
+        value: 300000,
         year: 2019,
         engine: 5.0
       },
       {
         make: 'Lamborghini',
         model: 'Urus ',
-        price: 200000,
+        value: 200000,
         year: 2019,
-        engine: 5.0
+        engine: 6.0
+      },
+      {
+        make: 'Rolls Royce',
+        model: 'Ghost ',
+        value: 350000,
+        year: 2019,
+        engine: 7.0
+      },
+      {
+        make: 'Rolls Royce',
+        model: 'Phantom',
+        value: 300000,
+        year: 2018,
+        engine: 7.0
+      },
+      {
+        make: 'Rolls Royce',
+        model: 'Wraith',
+        value: 300000,
+        year: 2019,
+        engine: 6.0
       }
     ];
-
+    // use the grid option 'popupParent' so that the popup windows are not constrained to the bounds of the grid.
     this.popupParent = document.body;
+    // the callback processChartOptions
     this.processChartOptions = function(params) {
-      var opt = params.options;
-      opt.title = { text: 'Cars for Sale' };
-      opt.legendPosition = 'bottom';
-      if (params.type === 'groupedBar') {
-        opt.xAxis.labelRotation = 0;
+      // customization based on chart type.
+      var options = params.options;
+      switch (params.type) {
+        case 'groupedBar':
+          options.legendPosition = 'bottom';
+          break;
+        case 'stackedBar':
+          options.legendPosition = 'bottom';
+          break;
+        case 'pie':
+          options.legendPosition = 'top';
+          break;
+        case 'doughnut':
+          options.legendPosition = 'right';
+          break;
+        case 'line':
+          options.legendPosition = 'left';
+          break;
       }
-      opt.seriesDefaults.tooltipRenderer = function(params) {
+      // return options;
+      // var options = params.options;
+      options.title = { text: 'Cars by Value (€)' };
+      options.legendPosition = 'bottom';
+      // if (params.type === 'groupedBar') {
+      //   options.xAxis.labelRotation = 0;
+      // }
+      options.seriesDefaults.tooltipRenderer = function(params) {
         console.log(params);
         var value = params.datum[params.yField];
         // console.log(params.yField);
         // console.log(value);
         return `<b>${params.yField}</b>: ${value}`;
       };
-      console.log(opt);
-      return opt;
+      console.log(options);
+      return options;
     };
   }
 
@@ -123,7 +154,7 @@ export class AppComponent {
       cellRange: {
         rowStartIndex: 0,
         rowEndIndex: 79,
-        columns: ['make', 'price', 'model']
+        columns: ['make', 'value', 'model']
       },
       chartType: 'groupedBar',
       chartContainer: document.querySelector('#myChart'),
@@ -131,18 +162,11 @@ export class AppComponent {
     };
     params.api.chartRange(chartRangeParams);
   }
-
-  gridOptions = {
-    // To enable charting in the grid
-    enableCharts: true,
-    // To allow users to create charts from a Range Selection and / or display the Chart Ranges in the grid
-    enableRangeSelection: true
-  };
 }
 
 // columnDefs = [
 //   { headerName: 'Make', field: 'make', rowGroup: true },
-//   { headerName: 'Price', field: 'price' }
+//   { headerName: 'value', field: 'value' }
 // ];
 // autoGroupColumnDef = {
 //   headerName: 'Model',
@@ -151,4 +175,11 @@ export class AppComponent {
 //   cellRendererParams: {
 //     checkbox: true
 //   }
+// };
+
+// gridOptions = {
+//   // To enable charting in the grid
+//   enableCharts: true,
+//   // To allow users to create charts from a Range Selection and / or display the Chart Ranges in the grid
+//   enableRangeSelection: true
 // };
