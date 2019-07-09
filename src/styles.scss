@@ -1,10 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~ag-grid-community/dist/styles/ag-grid.css';
 @import '~ag-grid-community/dist/styles/ag-theme-balham.css';
-// $odd-row-background-color: red;
+
+$odd-row-background-color: red;
+
 html,
 body {
-  margin: 0;
-  padding: 0;
+  // margin: 10px;
+  padding: 10px 20px;
   height: 100%;
 }

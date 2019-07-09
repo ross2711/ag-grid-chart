@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import 'ag-grid-enterprise';
+import 'ag-grid-enterprise/chartsModule';
 
 @Component({
   selector: 'app-root',
@@ -7,112 +9,161 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   private columnDefs;
-  private defaultColDef;
   private popupParent;
   private processChartOptions;
   private rowData: any;
+  private sideBar;
+  private rowSelection;
 
   constructor() {
+    // column definitions
     this.columnDefs = [
       {
-        headerName: 'Make',
-        field: 'make',
-        chartDataType: 'category',
-        sortable: true,
-        filter: true,
-        checkboxSelection: true
-      },
-      {
-        headerName: 'Model',
-        field: 'model',
-        chartDataType: 'category',
-        sortable: true,
-        filter: true
-      },
-      {
-        headerName: 'Year',
-        field: 'year',
-        sortable: true,
-        filter: true
-      },
-      {
-        headerName: 'Engine',
-        field: 'engine',
-        sortable: true,
-        filter: true
-      },
-      {
-        headerName: 'Value (EUR)',
-        field: 'value',
-        sortable: true,
-        filter: true
+        headerName: 'Car Details',
+        children: [
+          {
+            headerName: 'Make',
+            field: 'make',
+            chartDataType: 'category',
+            sortable: true,
+            filter: true,
+            checkboxSelection: true
+          },
+          {
+            headerName: 'Model',
+            field: 'model',
+            chartDataType: 'category',
+            sortable: true,
+            filter: true
+          },
+          {
+            headerName: 'Year',
+            field: 'year',
+            chartDataType: 'excluded',
+            sortable: true,
+            filter: true
+          },
+          {
+            headerName: 'Engine (L)',
+            field: 'engine',
+            chartDataType: 'excluded',
+            sortable: true,
+            filter: true
+          },
+          {
+            headerName: 'Color',
+            field: 'color',
+            chartDataType: 'excluded',
+            sortable: true,
+            filter: true
+          },
+          {
+            headerName: 'Value (EUR)',
+            field: 'value',
+            chartDataType: 'series',
+            sortable: true,
+            filter: true
+          }
+        ],
+        defaultToolPanel: 'columns'
       }
     ];
+    this.rowSelection = 'multiple';
 
     this.rowData = [
       {
         make: 'Ferrari',
         model: 'Monza',
-        value: 200000,
         year: 2019,
-        engine: 6.0
+        engine: 6.0,
+        value: 200000,
+        color: 'red'
       },
       {
         make: 'Ferrari',
         model: 'GTC4 ',
-        value: 200000,
         year: 2017,
-        engine: 5.0
+        engine: 5.0,
+        value: 200000,
+        color: 'red'
       },
       {
         make: 'Lamborghini',
         model: 'Huracan',
-        value: 200000,
         year: 2018,
-        engine: 6.0
+        engine: 6.0,
+        value: 200000,
+        color: 'yellow'
       },
       {
         make: 'Lamborghini',
         model: 'Aventador',
-        value: 300000,
         year: 2019,
-        engine: 5.0
+        engine: 5.0,
+        value: 300000,
+        color: 'yellow'
       },
       {
         make: 'Lamborghini',
         model: 'Urus ',
-        value: 200000,
         year: 2019,
-        engine: 6.0
+        engine: 6.0,
+        value: 200000,
+        color: 'yellow'
       },
       {
         make: 'Rolls Royce',
         model: 'Ghost ',
-        value: 350000,
         year: 2019,
-        engine: 7.0
+        engine: 7.0,
+        value: 350000,
+        color: 'blue'
       },
       {
         make: 'Rolls Royce',
         model: 'Phantom',
-        value: 300000,
         year: 2018,
-        engine: 7.0
+        engine: 7.0,
+        value: 300000,
+        color: 'black'
       },
       {
         make: 'Rolls Royce',
         model: 'Wraith',
-        value: 300000,
         year: 2019,
-        engine: 6.0
+        engine: 6.0,
+        value: 300000,
+        color: 'silver'
       }
     ];
+
+    // sidebar configuration with filter panel set as default
+    this.sideBar = {
+      toolPanels: [
+        {
+          id: 'filters',
+          labelDefault: 'Filters',
+          labelKey: 'filters',
+          iconKey: 'filter',
+          toolPanel: 'agFiltersToolPanel'
+        },
+        {
+          id: 'columns',
+          labelDefault: 'Columns',
+          labelKey: 'columns',
+          iconKey: 'columns',
+          toolPanel: 'agColumnsToolPanel'
+        }
+      ],
+      defaultToolPanel: 'filters'
+    };
+
     // use the grid option 'popupParent' so that the popup windows are not constrained to the bounds of the grid.
     this.popupParent = document.body;
-    // the callback processChartOptions
+    // The callback 'processChartOptions' is invoked once, before the chart is created, with ProcessChartOptionsParams
     this.processChartOptions = function(params) {
       // customization based on chart type.
-      var options = params.options;
+      const options = params.options;
       switch (params.type) {
         case 'groupedBar':
           options.legendPosition = 'bottom';
@@ -130,13 +181,17 @@ export class AppComponent {
           options.legendPosition = 'left';
           break;
       }
-      // return options;
-      // var options = params.options;
-      options.title = { text: 'Cars by Value (€)' };
+      // title
+      options.title = {
+        text: 'Cars by Value (€)'
+      };
+      // legend position
       options.legendPosition = 'bottom';
-      // if (params.type === 'groupedBar') {
-      //   options.xAxis.labelRotation = 0;
-      // }
+      // change label rotation
+      if (params.type === 'groupedBar') {
+        options.xAxis.labelRotation = 0;
+      }
+      // custom tooltipRenderer
       options.seriesDefaults.tooltipRenderer = function(params) {
         console.log(params);
         var value = params.datum[params.yField];
@@ -149,14 +204,14 @@ export class AppComponent {
     };
   }
 
+  // firstDataRendered is fired the first time data is rendered into the grid.
   onFirstDataRendered(params) {
-    var chartRangeParams = {
+    console.log('onFirstDataRendered', params);
+    const chartRangeParams = {
       cellRange: {
-        rowStartIndex: 0,
-        rowEndIndex: 79,
-        columns: ['make', 'value', 'model']
+        columns: ['model', 'make', 'value']
       },
-      chartType: 'groupedBar',
+      chartType: 'groupedbar',
       chartContainer: document.querySelector('#myChart'),
       aggregate: true
     };
@@ -183,3 +238,24 @@ export class AppComponent {
 //   // To allow users to create charts from a Range Selection and / or display the Chart Ranges in the grid
 //   enableRangeSelection: true
 // };
+
+//  this.gridOptions = {
+//    // To enable charting in the grid
+//    enableCharts: true,
+//    // To allow users to create charts from a Range Selection and / or display the Chart Ranges in the grid
+//    enableRangeSelection: true
+//  };
+
+// {
+//             headerName: 'Color',
+//             chartDataType: 'category',
+//             children: [
+//               {
+//                 headerName: 'Color',
+//                 field: 'color',
+//                 chartDataType: 'series',
+//                 sortable: true,
+//                 filter: true
+//               }
+//             ]
+//           },

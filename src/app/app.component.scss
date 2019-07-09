@@ -7,10 +7,19 @@
 .my-grid {
   flex-grow: 1;
   height: 10px !important;
+  min-height: 300px;
+  margin-bottom: 25px;
+  // width: 500px !important;
 }
 
 .my-chart {
   flex-grow: 2;
   height: 10px !important;
+  // min-height: 50px;
   display: inline-block;
+  min-height: 500px;
+}
+
+.ag-header-cell {
+  width: 100%;
 }
