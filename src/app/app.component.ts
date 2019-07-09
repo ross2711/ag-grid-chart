@@ -13,9 +13,14 @@ export class AppComponent {
   private processChartOptions;
   private rowData: any;
   private sideBar;
-  private rowSelection;
+  private gridOptions;
 
   constructor() {
+    this.gridOptions = {
+      // suppresses warning message on the console when 'defaultToolPanel' is used
+      suppressPropertyNamesCheck: true
+    };
+
     // column definitions
     this.columnDefs = [
       {
@@ -26,8 +31,8 @@ export class AppComponent {
             field: 'make',
             chartDataType: 'category',
             sortable: true,
-            filter: true,
-            checkboxSelection: true
+            filter: true
+            // checkboxSelection: true
           },
           {
             headerName: 'Model',
@@ -48,7 +53,8 @@ export class AppComponent {
             field: 'engine',
             chartDataType: 'excluded',
             sortable: true,
-            filter: true
+            filter: true,
+            valueFormatter: numberFormatter
           },
           {
             headerName: 'Color',
@@ -60,7 +66,6 @@ export class AppComponent {
           {
             headerName: 'Value (EUR)',
             field: 'value',
-            chartDataType: 'series',
             sortable: true,
             filter: true
           }
@@ -68,7 +73,6 @@ export class AppComponent {
         defaultToolPanel: 'columns'
       }
     ];
-    this.rowSelection = 'multiple';
 
     this.rowData = [
       {
@@ -158,6 +162,10 @@ export class AppComponent {
       defaultToolPanel: 'filters'
     };
 
+    function numberFormatter(params) {
+      return params.value.toFixed(1);
+    }
+
     // use the grid option 'popupParent' so that the popup windows are not constrained to the bounds of the grid.
     this.popupParent = document.body;
     // The callback 'processChartOptions' is invoked once, before the chart is created, with ProcessChartOptionsParams
@@ -218,44 +226,3 @@ export class AppComponent {
     params.api.chartRange(chartRangeParams);
   }
 }
-
-// columnDefs = [
-//   { headerName: 'Make', field: 'make', rowGroup: true },
-//   { headerName: 'value', field: 'value' }
-// ];
-// autoGroupColumnDef = {
-//   headerName: 'Model',
-//   field: 'model',
-//   cellRenderer: 'agGroupCellRenderer',
-//   cellRendererParams: {
-//     checkbox: true
-//   }
-// };
-
-// gridOptions = {
-//   // To enable charting in the grid
-//   enableCharts: true,
-//   // To allow users to create charts from a Range Selection and / or display the Chart Ranges in the grid
-//   enableRangeSelection: true
-// };
-
-//  this.gridOptions = {
-//    // To enable charting in the grid
-//    enableCharts: true,
-//    // To allow users to create charts from a Range Selection and / or display the Chart Ranges in the grid
-//    enableRangeSelection: true
-//  };
-
-// {
-//             headerName: 'Color',
-//             chartDataType: 'category',
-//             children: [
-//               {
-//                 headerName: 'Color',
-//                 field: 'color',
-//                 chartDataType: 'series',
-//                 sortable: true,
-//                 filter: true
-//               }
-//             ]
-//           },
